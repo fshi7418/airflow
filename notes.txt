@@ -1,0 +1,98 @@
+quick start
+set AIRFLOW_HOME = ~/airflow
+
+AIRFLOW_VERSION = 2.10.0
+
+```
+export AIRFLOW_HOME=~/airflow
+```
+
+```
+AIRFLOW_VERSION=2.10.0
+
+# Extract the version of Python you have installed. If you're currently using a Python version that is not supported by Airflow, you may want to set this manually.
+# See above for supported versions.
+PYTHON_VERSION="$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+
+CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+# For example this would install 2.10.0 with python 3.8: https://raw.githubusercontent.com/apache/airflow/constraints-2.10.0/constraints-3.8.txt
+
+pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+```
+
+actual execution:
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ export AIRFLOW_HOME=~/airflow
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ export AIRFLOW_VERSION=2.10.0
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ export PYTHON_VERSION="$(python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")')"
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ echo $PYTHON_VERSION
+3.11
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ CONSTRAINT_URL="https://raw.githubusercontent.com/apache/airflow/constraints-${AIRFLOW_VERSION}/constraints-${PYTHON_VERSION}.txt"
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ pip install "apache-airflow==${AIRFLOW_VERSION}" --constraint "${CONSTRAINT_URL}"
+
+# was a success
+
+```
+airflow standlone
+```
+
+goes to a login window
+login details are in the terminal that launched it
+
+we should pin the airflow version when installing other libraries in the same venv, e.g.
+pip install "apache-airflow==2.10.0" apache-airflow-providers-google==10.1.1
+
+changing some configs
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ export AIRFLOW_HOME=~/Repos/airflow/airflow_home
+
+used pgadmin4 to create a database called airflow under local-db and exuecuted the following in the query window:
+create user airflow_user with password 'airflow_pass';
+grant all privileges on database airflow to airflow_user;
+grant all on schema public to airflow_user;
+
+installed psycopg2 via
+pip install "apache-airflow==2.10.0" psycopg2
+failed - had to do sudo apt-get install python3.11-dev
+installed successfully with
+pip install "apache-airflow==2.10.0" psycopg2-binary
+<...>
+Installing collected packages: psycopg2-binary
+Successfully installed psycopg2-binary-2.9.9
+
+changed the database url in airflow.cfg to
+sql_alchemy_conn = postgresql+psycopg2://airflow_user:airflow_pass@localhost/airflow
+
+A note:
+You may need to update your Postgres pg_hba.conf to add the airflow user to the database access control list; and to reload the database configuration to load your change. See The pg_hba.conf File in the Postgres documentation to learn more.
+
+Executed this in cmd:
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ airflow db migrate
+/home/franks/Environments/airflow/lib/python3.11/site-packages/airflow/plugins_manager.py:30 DeprecationWarning: 'cgitb' is deprecated and slated for removal in Python 3.13
+DB: sqlite:////home/franks/airflow/airflow.db
+Performing upgrade to the metadata database sqlite:////home/franks/airflow/airflow.db
+[2024-08-19T21:11:22.834-0400] {migration.py:215} INFO - Context impl SQLiteImpl.
+[2024-08-19T21:11:22.835-0400] {migration.py:218} INFO - Will assume non-transactional DDL.
+[2024-08-19T21:11:22.835-0400] {migration.py:215} INFO - Context impl SQLiteImpl.
+[2024-08-19T21:11:22.835-0400] {migration.py:218} INFO - Will assume non-transactional DDL.
+[2024-08-19T21:11:22.836-0400] {db.py:1674} INFO - Creating tables
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+INFO  [alembic.runtime.migration] Context impl SQLiteImpl.
+INFO  [alembic.runtime.migration] Will assume non-transactional DDL.
+Database migrating done!
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ echo $AIRFLOW_HOME
+/home/franks/airflow
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ export AIRFLOW_HOME=/home/franks/Repos/airflow/airflow_home
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ airflow db migrate
+/home/franks/Environments/airflow/lib/python3.11/site-packages/airflow/plugins_manager.py:30 DeprecationWarning: 'cgitb' is deprecated and slated for removal in Python 3.13
+DB: postgresql+psycopg2://airflow_user:***@localhost/airflow
+Performing upgrade to the metadata database postgresql+psycopg2://airflow_user:***@localhost/airflow
+[2024-08-19T21:12:27.854-0400] {migration.py:215} INFO - Context impl PostgresqlImpl.
+[2024-08-19T21:12:27.855-0400] {migration.py:218} INFO - Will assume transactional DDL.
+[2024-08-19T21:12:27.855-0400] {migration.py:215} INFO - Context impl PostgresqlImpl.
+[2024-08-19T21:12:27.855-0400] {migration.py:218} INFO - Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Context impl PostgresqlImpl.
+INFO  [alembic.runtime.migration] Will assume transactional DDL.
+INFO  [alembic.runtime.migration] Running stamp_revision  -> 22ed7efa9da2
+Database migrating done!
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ 
+
