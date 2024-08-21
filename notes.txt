@@ -96,3 +96,81 @@ INFO  [alembic.runtime.migration] Running stamp_revision  -> 22ed7efa9da2
 Database migrating done!
 (airflow) franks@franks-MS-7D91:~/Repos/airflow$ 
 
+installed sqlalchemy
+pip install "apache-airflow==2.10.0" sqlalchemy
+<...>
+all requirementes satisfied
+
+installed pandas
+pip install "apache-airflow==2.10.0" pandas
+<...>
+Installing collected packages: numpy, pandas
+Successfully installed numpy-2.1.0 pandas-2.2.2
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ 
+
+create user for airflow
+airflow users create \
+    --username admin \
+    --firstname Frank \
+    --lastname Shi \
+    --role Admin \
+    --email fshi7418@gmail.com
+password is the hart house 2024 password
+actual execution:
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ airflow users create \
+    --username admin \
+    --firstname Frank \
+    --lastname Shi \
+    --role Admin \
+    --email fshi7418@gmail.com
+/home/franks/Environments/airflow/lib/python3.11/site-packages/airflow/plugins_manager.py:30 DeprecationWarning: 'cgitb' is deprecated and slated for removal in Python 3.13
+/home/franks/Environments/airflow/lib/python3.11/site-packages/flask_limiter/extension.py:333 UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+[2024-08-19T21:26:18.169-0400] {override.py:951} WARNING - No user yet created, use flask fab command to do it.
+Password:
+Repeat for confirmation:
+[2024-08-19T21:26:52.745-0400] {override.py:1543} INFO - Added user admin
+User "admin" created with role "Admin"
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ 
+
+launch webserver:
+```
+(airflow) franks@franks-MS-7D91:~/Repos/airflow$ airflow webserver --port 8080
+/home/franks/Environments/airflow/lib/python3.11/site-packages/airflow/plugins_manager.py:30 DeprecationWarning: 'cgitb' is deprecated and slated for removal in Python 3.13
+  ____________       _____________
+ ____    |__( )_________  __/__  /________      __
+____  /| |_  /__  ___/_  /_ __  /_  __ \_ | /| / /
+___  ___ |  / _  /   _  __/ _  / / /_/ /_ |/ |/ /
+ _/_/  |_/_/  /_/    /_/    /_/  \____/____/|__/
+Running the Gunicorn Server with:
+Workers: 4 sync
+Host: 0.0.0.0:8080
+Timeout: 120
+Logfiles: - -
+Access Logformat: 
+=================================================================
+/home/franks/Environments/airflow/lib/python3.11/site-packages/airflow/plugins_manager.py:30 DeprecationWarning: 'cgitb' is deprecated and slated for removal in Python 3.13
+/home/franks/Environments/airflow/lib/python3.11/site-packages/flask_limiter/extension.py:333 UserWarning: Using the in-memory storage for tracking rate limits as no storage was explicitly specified. This is not recommended for production use. See: https://flask-limiter.readthedocs.io#configuring-a-storage-backend for documentation about configuring the storage backend.
+/home/franks/Environments/airflow/lib/python3.11/site-packages/airflow/providers/fab/auth_manager/fab_auth_manager.py:498 FutureWarning: section/key [webserver/update_fab_perms] has been deprecated, you should use[fab/update_fab_perms] instead. Please update your `conf.get*` call to use the new name
+[2024-08-19 21:27:30 -0400] [9773] [INFO] Starting gunicorn 23.0.0
+[2024-08-19 21:27:30 -0400] [9773] [INFO] Listening at: http://0.0.0.0:8080 (9773)
+[2024-08-19 21:27:30 -0400] [9773] [INFO] Using worker: sync
+[2024-08-19 21:27:30 -0400] [9796] [INFO] Booting worker with pid: 9796
+[2024-08-19 21:27:30 -0400] [9797] [INFO] Booting worker with pid: 9797
+[2024-08-19 21:27:30 -0400] [9798] [INFO] Booting worker with pid: 9798
+[2024-08-19 21:27:30 -0400] [9799] [INFO] Booting worker with pid: 9799
+```
+
+launch scheduler:
+in another terminal:
+airflow scheduler
+
+
+20 August 2024
+An earlier setting of AIRFLOW_HOME was pointing to the wrong path. Had to export the correct AIRFLOW_HOME in the command line.
+
+set load_examples = False in airflow.cfg
+added hello_world_dag.py in $AIRFLOW_HOME/dags
+
+had to export correct AIRFLOW_HOME in both the terminals that run airflow webserver and airflow scheduler
+
+successfully ran the hello_world dag
