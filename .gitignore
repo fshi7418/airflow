@@ -166,3 +166,6 @@ airflow_home/airflow-webserver.pid
 airflow_home/logs/
 airflow_home/standalone_admin_password.txt
 airflow_home/airflow.db
+
+# passwords
+airflow_home/configs.json

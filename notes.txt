@@ -174,3 +174,15 @@ added hello_world_dag.py in $AIRFLOW_HOME/dags
 had to export correct AIRFLOW_HOME in both the terminals that run airflow webserver and airflow scheduler
 
 successfully ran the hello_world dag
+
+
+22 August 2024
+attempt to write a dag that sends an email to fshi7418@gmail.com and cc/bcc some others
+encountered connection error upon first running
+inherited example DAG's with syntax
+
+started using gmail for smtp server
+enabled two-factor authentication
+added app password for app = airflow_local
+
+eventually chose to use a python operator with a plugin function. worked
